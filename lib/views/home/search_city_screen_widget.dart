@@ -1,92 +1,19 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:skycast/constants/graphic_constants.dart';
-import 'package:skycast/controllers/search_city_provider.dart';
-import 'package:skycast/views/global/glass_scaffold.dart';
+import 'package:skycast/controllers/search_city_providers.dart';
 import 'package:skycast/views/global/responsive_text_widget.dart';
 import 'package:skycast/views/theme/app_pallete.dart';
 import 'package:skycast/views/weather_report/weather_screen.dart';
 
-class MyHomePage extends StatelessWidget {
-  MyHomePage({super.key});
-
-  final TextEditingController _searchController = TextEditingController();
-  final FocusNode _focusNode = FocusNode();
+class CitySuggestionBuilder extends StatelessWidget {
+  const CitySuggestionBuilder({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final cityProvider =
-        Provider.of<SearchCityProvider>(context, listen: false);
-
-    final searchBoxProvider =
-        Provider.of<SearchBoxProvider>(context, listen: false);
-    _focusNode.addListener(() {
-      searchBoxProvider.isFocused = _focusNode.hasFocus;
-    });
-
-    return GlassScaffold(
-        body: Center(
-      child: SingleChildScrollView(
-        child: Center(
-          child: SizedBox(
-            width: min(MediaQuery.of(context).size.width, 600),
-            child: Column(
-              mainAxisAlignment:
-                  Provider.of<SearchBoxProvider>(context, listen: true)
-                          .isFocused
-                      ? MainAxisAlignment.start
-                      : MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Consumer<SearchBoxProvider>(
-                    builder: (context, searchBoxProvider, child) {
-                  return searchBoxProvider.isFocused ||
-                          _searchController.text.isNotEmpty
-                      ? const SizedBox.shrink()
-                      : Column(
-                          children: [
-                            ResponsiveText('SKYCAST',
-                                style: TextStyle(
-                                  color: AppPallete.primaryWhite.level1,
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 25,
-                                )),
-                            const SizedBox(height: 20),
-                            ResponsiveText(
-                                "Which city's forecast are you curious about?",
-                                style: TextStyle(
-                                    color: AppPallete.primaryWhite.level1,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w300)),
-                            const SizedBox(height: 20),
-                          ],
-                        );
-                }),
-                Column(
-                  children: [
-                    _citySearchBox(cityProvider),
-                    const SizedBox(height: 20),
-                    Consumer<SearchBoxProvider>(
-                        builder: (context, searchBoxProvider, child) {
-                      return !searchBoxProvider.isFocused &&
-                              _searchController.text.isEmpty
-                          ? const SizedBox.shrink()
-                          : _cityListWidget();
-                    }),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    ));
-  }
-
-  Widget _cityListWidget() {
     return Consumer<SearchCityProvider>(
         builder: (context, cityProvider, child) {
       if (cityProvider.isSearchingEmpty) {
@@ -95,19 +22,17 @@ class MyHomePage extends StatelessWidget {
         );
       }
       if (cityProvider.isLoading) {
-        return _searchExceptionHandler(
+        return SearchExceptionHandler(
             upper: Lottie.asset(
               GraphicConstants.loadingAnimation,
               height: 200,
               width: 200,
             ),
-            context: context,
             message: 'Loading...');
       }
 
       if (cityProvider.cities.isEmpty) {
-        return _searchExceptionHandler(
-            context: context,
+        return SearchExceptionHandler(
             upper: Icon(Icons.not_listed_location_outlined,
                 color: AppPallete.primaryWhite.level1, size: 100),
             message: 'No city found');
@@ -128,16 +53,27 @@ class MyHomePage extends StatelessWidget {
               color: AppPallete.primaryWhite.level2,
             );
           }
-          return _cityTile(cityProvider, index, context);
+          return CityTile(
+            index: index,
+          );
         },
       );
     });
   }
+}
 
-  Widget _searchExceptionHandler(
-      {required Widget upper,
-      required String message,
-      required BuildContext context}) {
+class SearchExceptionHandler extends StatelessWidget {
+  const SearchExceptionHandler({
+    super.key,
+    required this.upper,
+    required this.message,
+  });
+
+  final Widget upper;
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.5,
       child: Column(
@@ -154,9 +90,19 @@ class MyHomePage extends StatelessWidget {
       ),
     );
   }
+}
 
-  ListTile _cityTile(
-      SearchCityProvider cityProvider, int index, BuildContext context) {
+class CityTile extends StatelessWidget {
+  const CityTile({
+    super.key,
+    required this.index,
+  });
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
+    final cityProvider =
+        Provider.of<SearchCityProvider>(context, listen: false);
     return ListTile(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -182,8 +128,23 @@ class MyHomePage extends StatelessWidget {
               fontWeight: FontWeight.w200)),
     );
   }
+}
 
-  TextField _citySearchBox(dynamic cityProvider) {
+class CitySearchBox extends StatelessWidget {
+  const CitySearchBox({
+    super.key,
+    required FocusNode focusNode,
+    required TextEditingController searchController,
+  })  : _focusNode = focusNode,
+        _searchController = searchController;
+
+  final FocusNode _focusNode;
+  final TextEditingController _searchController;
+
+  @override
+  Widget build(BuildContext context) {
+    final cityProvider =
+        Provider.of<SearchCityProvider>(context, listen: false);
     return TextField(
       focusNode: _focusNode,
       controller: _searchController,

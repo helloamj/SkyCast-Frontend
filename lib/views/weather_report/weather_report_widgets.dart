@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:skycast/views/global/responsive_text_widget.dart';
 
 class WeatherRow extends StatelessWidget {
   final String imagePath;
@@ -23,20 +24,20 @@ class WeatherRow extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            ResponsiveText(
               label,
               style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w300,
-                  fontSize: 14),
+                  fontSize: 12),
             ),
             const SizedBox(height: 3),
-            Text(
+            ResponsiveText(
               value,
               style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w700,
-                  fontSize: 16),
+                  fontSize: 14),
             ),
           ],
         ),

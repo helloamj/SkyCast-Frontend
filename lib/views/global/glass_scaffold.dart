@@ -47,50 +47,45 @@ class _GlassScaffoldState extends State<GlassScaffold>
 
   Scaffold _scaff(BuildContext context) {
     return Scaffold(
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        child: Stack(
-          children: [
-            Expanded(
-              child: AnimatedBuilder(
-                  animation: _animation,
-                  builder: (context, child) {
-                    return Column(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: AppPallete.primaryYellow.level1
-                                    .withOpacity(_animation.value)),
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: AppPallete.primaryPurple.level1
-                                    .withOpacity(_animation.value)),
-                          ),
-                        ),
-                      ],
-                    );
-                  }),
+      body: Stack(
+        children: [
+          AnimatedBuilder(
+              animation: _animation,
+              builder: (context, child) {
+                return Column(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: AppPallete.primaryYellow.level1
+                                .withOpacity(_animation.value)),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: AppPallete.primaryPurple.level1
+                                .withOpacity(_animation.value)),
+                      ),
+                    ),
+                  ],
+                );
+              }),
+          BackdropFilter(
+            blendMode: BlendMode.srcOver,
+            filter: ImageFilter.blur(
+              sigmaX: 100.0,
+              sigmaY: 100.0,
             ),
-            BackdropFilter(
-              blendMode: BlendMode.srcOver,
-              filter: ImageFilter.blur(
-                sigmaX: 100.0,
-                sigmaY: 100.0,
-              ),
-              child: Container(
-                decoration: const BoxDecoration(color: Colors.transparent),
-              ),
+            child: Container(
+              decoration: const BoxDecoration(color: Colors.transparent),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, kToolbarHeight, 20, 20),
-              child: widget.body ?? const SizedBox(),
-            ),
-          ],
-        ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, kToolbarHeight, 20, 20),
+            child: widget.body ?? const SizedBox(),
+          ),
+        ],
       ),
     );
   }

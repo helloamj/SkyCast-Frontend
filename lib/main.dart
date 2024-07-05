@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:skycast/controllers/search_city_provider.dart';
-import 'package:skycast/views/home_screen.dart';
+import 'package:skycast/helpers/fluttertoast_helper/fluttertoast_helper.dart';
+import 'package:skycast/helpers/multiprovider_helper/multiproviders_list.dart';
+import 'package:skycast/views/home/search_city_screen.dart';
 import 'package:skycast/views/theme/theme.dart';
 
 void main() {
@@ -13,15 +14,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => SearchCityProvider()),
-        ChangeNotifierProvider(create: (_) => SearchBoxProvider()),
-      ],
+      providers: MultiprovidersList.providers,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'SkyCast',
         theme: AppTheme.instance,
-        home: MyHomePage(),
+        home: SearchCityScreen(),
       ),
     );
   }
