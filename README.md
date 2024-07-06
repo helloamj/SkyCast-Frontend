@@ -4,15 +4,15 @@ SKYCAST is a Flutter app that allows users to search for and display current wea
 
 ## Features
 
-- Home screen with a search bar to enter a city name
-- Weather details screen to display the weather information
-- Loading indicator while fetching data
-- Displays city name, current temperature (in Celsius), weather condition, an icon representing the weather condition, humidity percentage, and wind speed
-- Error handling for API requests with user-friendly error messages
-- State management using Provider
-- Responsive design for both mobile and tablet devices
-- "Refresh" button to fetch updated weather data
-- Data persistence to save the last searched city
+✅ Home screen with a search bar to enter a city name
+✅ Weather details screen to display the weather information
+✅ Loading indicator while fetching data
+✅ Displays city name, current temperature (in Celsius), weather condition, an icon representing the weather condition, humidity percentage, and wind speed
+✅ Error handling for API requests with user-friendly error messages
+✅ State management using Provider
+✅ Responsive design for both mobile and tablet devices
+✅ "Refresh" button to fetch updated weather data
+✅ Data persistence to save the last searched city
 
 ## Installation
 
