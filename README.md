@@ -40,7 +40,7 @@ To run this app on your local machine, follow these steps:
 3. **Set up OpenWeatherMap API:**
 
     - Sign up at [OpenWeatherMap](https://openweathermap.org/) and get your API key.
-    - Navigate to the `lib/constants` folder and open the file where the API key is stored.
+    - Navigate to the `lib/constants` folder and open the file `api_constants.dart` where the API key is stored.
     - Change the value of the static variable `apiKey` to your API key:
 
       ```dart
