@@ -76,10 +76,6 @@ To run this app on your local machine, follow these steps:
   <img src="https://github.com/helloamj/SkyCast-Frontend/assets/110400753/3010c340-7f19-43b0-b3d9-932bec8e8edf" width="240" /> 
 </p>
 
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
 ## Contact
 
 If you have any questions or feedback, feel free to reach out to me at jainkunal129@gmail.com.
