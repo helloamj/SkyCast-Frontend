@@ -16,7 +16,7 @@ SKYCAST is a Flutter app that allows users to search for and display current wea
 
 ## Install .apk
 
-[![Install with SkyCast](https://img.shields.io/badge/Install%20SkyCast-blue)](https://drive.google.com/file/d/11irKYYLqUczXDWHut-Ash_UyCW3B8Kr2/view?usp=sharing)
+[![Install with SkyCast](https://img.shields.io/badge/Install%20with-SkyCast-blue)](https://drive.google.com/file/d/11irKYYLqUczXDWHut-Ash_UyCW3B8Kr2/view?usp=sharing)
 
 ## Dev Installation
 
