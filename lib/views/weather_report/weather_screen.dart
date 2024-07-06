@@ -22,45 +22,65 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
+  Future<WeatherReportModel>? _weatherReportModel;
+
+  @override
+  void initState() {
+    // Fetch weather report for the specified city
+    _weatherReportModel = WeatherServices.getWeatherReport(widget.city);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GlassScaffold(
-      body: Center(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          // Refresh the weather report when the user pulls down the screen
+          _weatherReportModel = WeatherServices.getWeatherReport(widget.city);
+          setState(() {});
+        },
         child: SingleChildScrollView(
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height - kToolbarHeight - 20,
-            child: FutureBuilder<WeatherReportModel>(
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: Lottie.asset(
-                      GraphicConstants.loadingAnimation,
-                      height: 200,
-                      width: 200,
-                    ),
-                  );
-                }
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Center(
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height - kToolbarHeight - 20,
+              child: FutureBuilder<WeatherReportModel>(
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // Show a loading animation while waiting for the weather report
+                    return Center(
+                      child: Lottie.asset(
+                        GraphicConstants.loadingAnimation,
+                        height: 200,
+                        width: 200,
+                      ),
+                    );
+                  }
 
-                if (snapshot.hasError) {
-                  return const Center(
-                    child: ResponsiveText('Error fetching data',
-                        style: TextStyle(color: Colors.white, fontSize: 20)),
-                  );
-                }
+                  if (snapshot.hasError) {
+                    // Show an error message if there was an error fetching the data
+                    return const Center(
+                      child: ResponsiveText('Error fetching data',
+                          style: TextStyle(color: Colors.white, fontSize: 20)),
+                    );
+                  }
 
-                if (snapshot.data == null) {
-                  return const Center(
-                    child: ResponsiveText('No data found',
-                        style: TextStyle(color: Colors.white, fontSize: 20)),
+                  if (snapshot.data == null) {
+                    // Show a message if no data was found
+                    return const Center(
+                      child: ResponsiveText('No data found',
+                          style: TextStyle(color: Colors.white, fontSize: 20)),
+                    );
+                  }
+                  return ResponsiveWidget(
+                    tablet: _tabletView(snapshot),
+                    mobile: _mobileView(snapshot),
                   );
-                }
-                return ResponsiveWidget(
-                  tablet: _tabletView(snapshot),
-                  mobile: _mobileView(snapshot),
-                );
-              },
-              future: WeatherServices.getWeatherReport(widget.city),
+                },
+                future: _weatherReportModel,
+              ),
             ),
           ),
         ),
@@ -78,6 +98,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Display the city name
               ResponsiveText(
                 '📍 ${widget.city.name}',
                 style: const TextStyle(
@@ -86,6 +107,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     fontSize: 15),
               ),
               const SizedBox(height: 8),
+              // Display a greeting based on the current time
               ResponsiveText(
                 DateTime.now().greetGood,
                 style: const TextStyle(
@@ -105,6 +127,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            // Display the current temperature
             ResponsiveText(
               '${snapshot.data!.main.temp.celsius}°C',
               style: const TextStyle(
@@ -112,6 +135,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   fontSize: 45,
                   fontWeight: FontWeight.w600),
             ),
+            // Display the weather description
             ResponsiveText(
               snapshot.data!.weather[0].description.capitalize,
               style: const TextStyle(
@@ -120,6 +144,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 5),
+            // Display the current date and time
             ResponsiveText(
               DateTime.now().dateTime,
               style: const TextStyle(
@@ -137,15 +162,17 @@ class _WeatherScreenState extends State<WeatherScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                // Display the humidity
                 WeatherRow(
                   imagePath: GraphicConstants.sunRise,
-                  label: 'Sunrise',
-                  value: snapshot.data!.sys.sunrise.unixToFormattedTime(),
+                  label: 'Humidity',
+                  value: '${snapshot.data!.main.humidity}%',
                 ),
+                // Display the wind speed
                 WeatherRow(
                   imagePath: GraphicConstants.sunSet,
-                  label: 'Sunset',
-                  value: snapshot.data!.sys.sunset.unixToFormattedTime(),
+                  label: 'Wind Speed',
+                  value: '${snapshot.data!.wind.speed} mph',
                 ),
               ],
             ),
@@ -158,11 +185,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                // Display the maximum temperature
                 WeatherRow(
                   imagePath: GraphicConstants.tempMax,
                   label: 'Temp Max',
                   value: "${snapshot.data!.main.tempMax.celsius} °C",
                 ),
+                // Display the minimum temperature
                 WeatherRow(
                   imagePath: GraphicConstants.tempMin,
                   label: 'Temp Min',
@@ -187,6 +216,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                // Display the city name
                 ResponsiveText(
                   '📍 ${widget.city.name}',
                   style: const TextStyle(
@@ -195,6 +225,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       fontSize: 15),
                 ),
                 const SizedBox(height: 8),
+                // Display a greeting based on the current time
                 ResponsiveText(
                   DateTime.now().greetGood,
                   style: const TextStyle(
@@ -207,6 +238,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                // Display the current temperature
                 ResponsiveText(
                   '${snapshot.data!.main.temp.celsius}°C',
                   style: const TextStyle(
@@ -214,6 +246,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       fontSize: 50,
                       fontWeight: FontWeight.w600),
                 ),
+                // Display the weather description
                 ResponsiveText(
                   snapshot.data!.weather[0].description.capitalize,
                   style: const TextStyle(
@@ -222,6 +255,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(height: 5),
+                // Display the current date and time
                 ResponsiveText(
                   DateTime.now().dateTime,
                   style: const TextStyle(
@@ -238,21 +272,25 @@ class _WeatherScreenState extends State<WeatherScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Display the humidity
             WeatherRow(
               imagePath: GraphicConstants.sunRise,
-              label: 'Sunrise',
-              value: snapshot.data!.sys.sunrise.unixToFormattedTime(),
+              label: 'Humidity',
+              value: '${snapshot.data!.main.humidity}%',
             ),
+            // Display the wind speed
             WeatherRow(
               imagePath: GraphicConstants.sunSet,
-              label: 'Sunset',
-              value: snapshot.data!.sys.sunset.unixToFormattedTime(),
+              label: 'Wind Speed',
+              value: '${snapshot.data!.wind.speed} mph',
             ),
+            // Display the maximum temperature
             WeatherRow(
               imagePath: GraphicConstants.tempMax,
               label: 'Temp Max',
               value: "${snapshot.data!.main.tempMax.celsius} °C",
             ),
+            // Display the minimum temperature
             WeatherRow(
               imagePath: GraphicConstants.tempMin,
               label: 'Temp Min',
@@ -265,6 +303,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   Widget _getAnimation(AsyncSnapshot<WeatherReportModel> snapshot) {
+    // Display the weather animation based on the weather condition
     return Lottie.asset(
       '${GraphicConstants.weatherLottieFolder}${snapshot.data!.weather[0].icon}.json',
       fit: BoxFit.cover,

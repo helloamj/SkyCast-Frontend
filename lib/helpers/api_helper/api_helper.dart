@@ -1,13 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:skycast/constants/api_constants.dart';
 import 'package:skycast/helpers/fluttertoast_helper/fluttertoast_helper.dart';
 
 class ApiHelper {
+  // Method to make a GET request
   static Future<dynamic> get(String url,
       {Map<String, dynamic> queryParams = const {}}) async {
     try {
@@ -30,6 +29,7 @@ class ApiHelper {
     }
   }
 
+  // Method to make a POST request
   static Future<dynamic> post(String url, dynamic data) async {
     try {
       final response = await http.post(
@@ -51,6 +51,7 @@ class ApiHelper {
     }
   }
 
+  // Method to make a PUT request
   static Future<dynamic> put(String url, dynamic data) async {
     try {
       final response = await http.put(
@@ -72,6 +73,7 @@ class ApiHelper {
     }
   }
 
+  // Method to make a DELETE request
   static Future<dynamic> delete(String url) async {
     try {
       final response = await http.delete(
@@ -92,6 +94,7 @@ class ApiHelper {
     }
   }
 
+  // Method to handle the response based on the status code
   static dynamic _handleResponse(http.Response response) {
     switch (response.statusCode) {
       case 200:
@@ -110,6 +113,7 @@ class ApiHelper {
     }
   }
 
+  // Method to log the error message and throw an exception
   static void _logAndThrowException(
       String message, String methodName, ApiException exception) {
     log(message, name: methodName);
@@ -119,6 +123,7 @@ class ApiHelper {
     throw exception;
   }
 
+  // Method to get a user-friendly error message based on the exception type
   static String _getFriendlyMessage(ApiException exception) {
     if (exception is NetworkException) {
       return 'Network error. Please check your internet connection and try again.';
@@ -136,6 +141,7 @@ class ApiHelper {
   }
 }
 
+// Custom exception class for API errors
 class ApiException implements Exception {
   final String message;
   ApiException(this.message);
@@ -143,22 +149,27 @@ class ApiException implements Exception {
   String toString() => 'ApiException: $message';
 }
 
+// Custom exception class for network errors
 class NetworkException extends ApiException {
   NetworkException(super.message);
 }
 
+// Custom exception class for bad request errors
 class BadRequestException extends ApiException {
   BadRequestException(super.message);
 }
 
+// Custom exception class for unauthorized errors
 class UnauthorizedException extends ApiException {
   UnauthorizedException(super.message);
 }
 
+// Custom exception class for not found errors
 class NotFoundException extends ApiException {
   NotFoundException(super.message);
 }
 
+// Custom exception class for internal server errors
 class InternalServerException extends ApiException {
   InternalServerException(super.message);
 }
