@@ -75,7 +75,7 @@ To run this app on your local machine, follow these steps:
 ![Weather Details Screen](screenshots/weather_details_screen.png)
 <p align="center">
   <img src="https://github.com/helloamj/SkyCast-Frontend/assets/110400753/25144a53-f9a5-4f5b-8c72-346ea2e06e89" width="120"  />
-  <img src="https://github.com/helloamj/SkyCast-Frontend/assets/110400753/3010c340-7f19-43b0-b3d9-932bec8e8edf" width="120" /> 
+  <img src="https://github.com/helloamj/SkyCast-Frontend/assets/110400753/3010c340-7f19-43b0-b3d9-932bec8e8edf" width="240" /> 
 </p>
 
 ## License
