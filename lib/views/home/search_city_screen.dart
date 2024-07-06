@@ -35,7 +35,7 @@ class SearchCityScreen extends StatelessWidget {
                 )
               // Otherwise, show the responsive widget wrapped in a SingleChildScrollView
               : SingleChildScrollView(
-                  child: _responsiveWidget(context),
+                  child: Center(child: _responsiveWidget(context)),
                 );
         },
       ),
@@ -72,32 +72,35 @@ class SearchCityScreen extends StatelessWidget {
                     _searchController.text.isNotEmpty
                 ? const SizedBox.shrink()
                 // Otherwise, show the SKYCAST title and description
-                : Column(
-                    children: [
-                      ResponsiveText(
-                        'SKYCAST',
-                        style: TextStyle(
-                          color: AppPallete.primaryWhite.level1,
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 25,
+                : LayoutBuilder(builder: (context, constraints) {
+                    return Column(
+                      children: [
+                        ResponsiveText(
+                          'SKYCAST',
+                          style: TextStyle(
+                            color: AppPallete.primaryWhite.level1,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: min(constraints.maxWidth, 600) / 20,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      ResponsiveText(
-                        "Which city's forecast are you curious about?",
-                        style: TextStyle(
-                          color: AppPallete.primaryWhite.level1,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w300,
+                        const SizedBox(height: 20),
+                        ResponsiveText(
+                          "Which city's forecast are you curious about?",
+                          style: TextStyle(
+                            color: AppPallete.primaryWhite.level1,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w300,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                    ],
-                  );
+                        const SizedBox(height: 20),
+                      ],
+                    );
+                  });
           },
         ),
         Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CitySearchBox(
               focusNode: _focusNode,

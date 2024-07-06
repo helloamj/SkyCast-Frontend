@@ -143,15 +143,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   fontSize: 15,
                   fontWeight: FontWeight.w500),
             ),
-            const SizedBox(height: 5),
-            // Display the current date and time
-            ResponsiveText(
-              DateTime.now().dateTime,
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w300),
-            ),
           ],
         ),
         const SizedBox(
@@ -253,15 +244,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                       color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.w500),
-                ),
-                const SizedBox(height: 5),
-                // Display the current date and time
-                ResponsiveText(
-                  DateTime.now().dateTime,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w300),
                 ),
               ],
             ),

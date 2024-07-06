@@ -7,8 +7,7 @@ class ResponsiveText extends StatelessWidget {
   final TextStyle style;
 
   // Constructor for the ResponsiveText widget
-  const ResponsiveText(this.text, {Key? key, required this.style})
-      : super(key: key);
+  const ResponsiveText(this.text, {super.key, required this.style});
 
   @override
   Widget build(BuildContext context) {
