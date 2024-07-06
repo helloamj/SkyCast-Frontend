@@ -21,8 +21,8 @@ To run this app on your local machine, follow these steps:
 1. **Clone the repository:**
 
     ```sh
-    git clone https://github.com/yourusername/skycast.git
-    cd skycast
+    git clone https://github.com/helloamj/SkyCast-Frontend.git
+    cd SkyCast-Frontend
     ```
 
 2. **Install dependencies:**
