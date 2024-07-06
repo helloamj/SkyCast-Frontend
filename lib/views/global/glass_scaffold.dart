@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:skycast/views/theme/app_pallete.dart';
 
 class GlassScaffold extends StatefulWidget {
-  GlassScaffold({
+  const GlassScaffold({
     super.key,
     this.body,
   });
@@ -22,19 +22,23 @@ class _GlassScaffoldState extends State<GlassScaffold>
   @override
   void initState() {
     super.initState();
+
+    // Initialize the animation controller
     _controller = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
     )..repeat(reverse: true);
+
+    // Define the animation
     _animation = Tween(
       begin: 0.2,
       end: 0.3,
     ).animate(_controller);
   }
-  // dispose
 
   @override
   void dispose() {
+    // Dispose the animation controller when the state is disposed
     _controller.dispose();
 
     super.dispose();
@@ -49,28 +53,27 @@ class _GlassScaffoldState extends State<GlassScaffold>
     return Scaffold(
       body: Stack(
         children: [
+          // Animated background container with gradient
           AnimatedBuilder(
               animation: _animation,
               builder: (context, child) {
-                return Column(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: AppPallete.primaryYellow.level1
-                                .withOpacity(_animation.value)),
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: AppPallete.primaryPurple.level1
-                                .withOpacity(_animation.value)),
-                      ),
-                    ),
-                  ],
+                return Container(
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      // Apply opacity to the gradient colors based on the animation value
+                      AppPallete.primaryWhite.level1
+                          .withOpacity(_animation.value),
+                      AppPallete.primaryBlue.level3!
+                          .withOpacity(_animation.value),
+                    ],
+                  )),
                 );
               }),
+
+          // Backdrop filter to apply blur effect
           BackdropFilter(
             blendMode: BlendMode.srcOver,
             filter: ImageFilter.blur(
@@ -81,6 +84,8 @@ class _GlassScaffoldState extends State<GlassScaffold>
               decoration: const BoxDecoration(color: Colors.transparent),
             ),
           ),
+
+          // Padding with the main content of the scaffold
           Padding(
             padding: const EdgeInsets.fromLTRB(20, kToolbarHeight, 20, 20),
             child: widget.body ?? const SizedBox(),

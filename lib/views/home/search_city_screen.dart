@@ -16,31 +16,47 @@ class SearchCityScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get the SearchBoxProvider instance using Provider.of
     final searchBoxProvider =
         Provider.of<SearchBoxProvider>(context, listen: false);
+
+    // Add a listener to the focus node to update the isFocused property of SearchBoxProvider
     _focusNode.addListener(() {
       searchBoxProvider.isFocused = _focusNode.hasFocus;
     });
 
     return GlassScaffold(
-        body: Center(
-      child: SingleChildScrollView(
-        child: Center(
-          child: ResponsiveWidget(
-            mobile: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: _mainScreen(context),
-            ),
-            tablet: SizedBox(
-              width: 600,
-              child: _mainScreen(context),
-            ),
-          ),
-        ),
+      body: Consumer<SearchBoxProvider>(
+        builder: (context, searchBoxProvider, child) {
+          // If the search box is not focused and the search controller is empty, show the centered responsive widget
+          return !searchBoxProvider.isFocused && _searchController.text.isEmpty
+              ? Center(
+                  child: _responsiveWidget(context),
+                )
+              // Otherwise, show the responsive widget wrapped in a SingleChildScrollView
+              : SingleChildScrollView(
+                  child: Center(child: _responsiveWidget(context)),
+                );
+        },
       ),
-    ));
+    );
   }
 
+  // Returns a ResponsiveWidget based on the screen size
+  ResponsiveWidget _responsiveWidget(BuildContext context) {
+    return ResponsiveWidget(
+      mobile: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: _mainScreen(context),
+      ),
+      tablet: SizedBox(
+        width: 600,
+        child: _mainScreen(context),
+      ),
+    );
+  }
+
+  // Returns the main screen widget
   Column _mainScreen(BuildContext context) {
     return Column(
       mainAxisAlignment:
@@ -50,42 +66,57 @@ class SearchCityScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Consumer<SearchBoxProvider>(
-            builder: (context, searchBoxProvider, child) {
-          return searchBoxProvider.isFocused ||
-                  _searchController.text.isNotEmpty
-              ? const SizedBox.shrink()
-              : Column(
-                  children: [
-                    ResponsiveText('SKYCAST',
-                        style: TextStyle(
-                          color: AppPallete.primaryWhite.level1,
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 25,
-                        )),
-                    const SizedBox(height: 20),
-                    ResponsiveText(
-                        "Which city's forecast are you curious about?",
-                        style: TextStyle(
+          builder: (context, searchBoxProvider, child) {
+            // If the search box is focused or the search controller is not empty, show an empty SizedBox
+            return searchBoxProvider.isFocused ||
+                    _searchController.text.isNotEmpty
+                ? const SizedBox.shrink()
+                // Otherwise, show the SKYCAST title and description
+                : LayoutBuilder(builder: (context, constraints) {
+                    return Column(
+                      children: [
+                        ResponsiveText(
+                          'SKYCAST',
+                          style: TextStyle(
+                            color: AppPallete.primaryWhite.level1,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: min(constraints.maxWidth, 600) / 20,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        ResponsiveText(
+                          "Which city's forecast are you curious about?",
+                          style: TextStyle(
                             color: AppPallete.primaryWhite.level1,
                             fontSize: 12,
-                            fontWeight: FontWeight.w300)),
-                    const SizedBox(height: 20),
-                  ],
-                );
-        }),
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    );
+                  });
+          },
+        ),
         Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CitySearchBox(
-                focusNode: _focusNode, searchController: _searchController),
+              focusNode: _focusNode,
+              searchController: _searchController,
+            ),
             const SizedBox(height: 20),
             Consumer<SearchBoxProvider>(
-                builder: (context, searchBoxProvider, child) {
-              return !searchBoxProvider.isFocused &&
-                      _searchController.text.isEmpty
-                  ? const SizedBox.shrink()
-                  : const CitySuggestionBuilder();
-            }),
+              builder: (context, searchBoxProvider, child) {
+                // If the search box is not focused and the search controller is empty, show an empty SizedBox
+                return !searchBoxProvider.isFocused &&
+                        _searchController.text.isEmpty
+                    ? const SizedBox.shrink()
+                    // Otherwise, show the CitySuggestionBuilder widget
+                    : const CitySuggestionBuilder();
+              },
+            ),
           ],
         ),
       ],
